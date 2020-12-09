@@ -1,0 +1,2 @@
+D:/Projekty/OGLTest/OGLTest/src/vendor/glm/out/build/x64-Debug (default)/CMakeFiles/edit_cache.dir
+D:/Projekty/OGLTest/OGLTest/src/vendor/glm/out/build/x64-Debug (default)/CMakeFiles/rebuild_cache.dir

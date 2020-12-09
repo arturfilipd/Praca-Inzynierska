@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{7c827ba1-d4ed-492a-a4be-dd3b2b1f4c5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{37cb37d0-7547-4074-b943-6c6a8050251e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Maps.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Screens.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\OGLTest\res\textures\tex1.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\OGLTest\res\textures\tex2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="..\OGLTest\res\textures\tex3.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="res\models\palete.png">
+      <Filter>Resource Files\Models</Filter>
+    </Image>
+    <Image Include="res\models\palete1.png">
+      <Filter>Resource Files\Models</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Enemies.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Maps.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Screens.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\models\ayyy.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="res\models\projectile.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="res\models\robobro.fbx">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="res\models\robobro.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="res\models\roundbot.mtl">
+      <Filter>Resource Files\Models</Filter>
+    </None>
+    <None Include="res\shaders\UI.shader" />
+    <None Include="res\shaders\Text.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="res\models\projectile.obj">
+      <Filter>Resource Files\Models</Filter>
+    </Object>
+    <Object Include="res\models\roundbot.obj">
+      <Filter>Resource Files\Models</Filter>
+    </Object>
+    <Object Include="res\models\ayyy.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\fonts\arial.ttf" />
+  </ItemGroup>
+</Project>
