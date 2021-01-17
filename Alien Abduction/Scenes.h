@@ -51,6 +51,7 @@ public:
 class PauseMenu : public MenuScene {
 protected:
 	GameplayScene* gameScene;
+	int frames = 0;
 public:
 	PauseMenu(App* app, GameplayScene* prevScene);
 	PauseMenu(App* app);
@@ -127,6 +128,7 @@ public:
 	WeaponStatus(Scene * s, float x, float y, float w, float h);
 	void debugPrint();	
 	void Update();
+	void Draw();
 };
 class WeaponPistol;
 class GenericWeaponStatus : public HorizontalPanel {
@@ -204,5 +206,5 @@ public:
 class PerfTestResultScene : public MenuScene {
 	int maxFps, minFps, avgFps;
 public:
-	PerfTestResultScene(App* app, int max, int min, int avg);
+	PerfTestResultScene(App* app, int max, int min, int avg, bool passed);
 };

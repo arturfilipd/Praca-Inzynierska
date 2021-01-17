@@ -1,4 +1,4 @@
-#include "Scenes.h"
+﻿#include "Scenes.h"
 #include "ResourceLoader.h"
 #include "Maps.h"
 #include "Weapons.h"
@@ -7,22 +7,28 @@
 #include "GameImpl.h"
 
 MainMenu::MainMenu(App * app) : MenuScene(app){
+	//Pobranie wymiarów okna
 	int ww = GetSceneWidth();
-	int wh = GetSceneHeight();
+	int wh = GetSceneHeight();	
+	//Ustawienie obrazu tła
 	SetBackground(ResourceLoader::backgroundImage);
+	//Sprawdzenie istnienia pliku zapisu
 	bool saved;
 	fstream file;
 	file.open("current.save");
 	saved = (!file.fail());
 	file.close();
+	//Tytuł gry
 	Label* logo = new Label("Alien Abduction");	
 	logo->SetDimensions(ww * 0.f, wh * 0.2f, ww * 1.f, wh * 0.1f);
-	logo->SetAlign(CENTRE);	
-	panel = new MainMenuPanel(this, ww * 0.3f, wh * 0.3f, ww * 0.4f, wh * 0.4f);	
+	logo->SetAlign(CENTRE);		
+	//Panel wybroru
+	panel = new MainMenuPanel(this, ww * 0.3f, wh * 0.3f, ww * 0.4f, wh * 0.4f);		
 	if (saved) panel->AddElement(new LoadSavedButton());
 	panel->AddElement(new NewGameButton());
 	panel->AddElement(new StartPerformanceTestButon());
 	panel->AddElement(new ExitButton());
+	//Dodanie elementów do sceny
 	AddElement(logo);
 	AddElement(panel);
 }
@@ -35,29 +41,27 @@ void MainMenu::OnReplace(){
 	delete this;
 }
 
-MainMenuButton::MainMenuButton(const char * lab) : MenuButton(lab){
+MainMenuButton::MainMenuButton(const char * label) : MenuButton(label){
 	basicTexture = ResourceLoader::buttonTexture;
 	highlightedTexture = ResourceLoader::activebuttonTexture;
-	name = lab;
+	name = label;
 }
 
-//Continue
+//Nowa gra
+NewGameButton::NewGameButton() : MainMenuButton("New Game") {}
+void NewGameButton::Action() {
+	Camera* cam = new Camera(0.f, 6.f, 1.f);
+	GameImpl* newGame = new GameImpl(scene->GetApp()->GetWindow(), cam);
+	scene->GetApp()->ChangeScene(new GameplaySceneImpl(scene->GetApp(), newGame, new MapL1()));
+}
+//Kontynuacja
 LoadSavedButton::LoadSavedButton() : MainMenuButton("Continue"){}
 void LoadSavedButton::Action() {
 	Camera* cam = new Camera(0.f, 6.f, 1.f);
 	GameImpl* newGame = new GameImpl(scene->GetApp()->GetWindow(), cam);
 	scene->GetApp()->ChangeScene(new GameplaySceneImpl(scene->GetApp(), newGame));
 }
-
-// New Game
-NewGameButton::NewGameButton() : MainMenuButton("New Game") { name = GetLabel(); }
-void NewGameButton::Action(){	
-	Camera * cam = new Camera(0.f, 6.f, 1.f);
-	GameImpl* newGame = new GameImpl(scene->GetApp()->GetWindow(), cam);
-	scene->GetApp()->ChangeScene(new GameplaySceneImpl(scene->GetApp(), newGame, new MapL1()));
-}
-
-// PrefTest
+//Test
 StartPerformanceTestButon::StartPerformanceTestButon() :MainMenuButton("Test") {}
 void StartPerformanceTestButon::Action(){
 	Camera* cam = new Camera(0.f, 6.f, 1.f);
@@ -86,10 +90,11 @@ void GameplaySceneImpl::Init(){
 	pause = new PauseMenu(app, this);
 	StatusBar* panel = new StatusBar(this, 0, wheight * 0.9f, wwidth * 0.3f, wheight * 0.1f);
 	WeaponStatus* weaponBar = new WeaponStatus(this, wwidth * 0.7f, wheight * 0.9f, wwidth * 0.3f, wheight * 0.1f);
-	FPSCounter* fps = new FPSCounter(this, 0, 0, 50, 50);
+	//FPSCounter* fps = new FPSCounter(this, 0, 0, 50, 50);
+	//AddUIElement(fps);
 	AddUIElement(panel);
 	AddUIElement(weaponBar);
-	AddUIElement(fps);
+	
 }
 
 void GameplaySceneImpl::Update(){	
@@ -170,6 +175,11 @@ void WeaponStatus::Update(){
 	}
 	if (status != nullptr)
 		status->Update();	
+}
+
+void WeaponStatus::Draw() {
+	UIElement::Draw();
+	if (status != nullptr) status->Draw();
 }
 
 GenericWeaponStatus::GenericWeaponStatus(Weapon* p, Texture * tex){	
@@ -290,10 +300,12 @@ PauseMenu::PauseMenu(App * app) :MenuScene(app){}
 
 void PauseMenu::Update(){
 	MenuScene::Update();
-	if (glfwGetKey(app->GetWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) Unpause();
+	if (frames < 30) frames++;
+	if (app->GetKeyStatus(GLFW_KEY_ESCAPE) == GLFW_PRESS && frames >= 30) Unpause();
 }
 
 void PauseMenu::Unpause(){
+	frames = 0;
 	app->ChangeScene(gameScene);
 }
 
@@ -319,41 +331,37 @@ void ExitToMenuButton::Action(){
 
 //End game----------------------------------------------------
 
-GameEndScene::GameEndScene(App * app, GameplayScene* scene, bool result): PauseMenu (app){
+GameEndScene::GameEndScene(App* app, GameplayScene* scene, bool result) : PauseMenu(app) {
 	this->gameScene = scene;
 	int ww = GetSceneWidth();
 	int wh = GetSceneHeight();
 	SetBackground(ResourceLoader::backgroundImage);
 
 	panel = new MainMenuPanel(this, 50.f, 100.f, ww * 0.3f, wh * 0.5f);
-		panel->AddElement(new ExitToMenuButton(true));
-		panel->AddElement(new RetryButton());
+	panel->AddElement(new ExitToMenuButton(true));
+	panel->AddElement(new RetryButton());
 	AddElement(panel);
 
 	Label* label = new Label("GAME OVER");
-		label->SetDimensions(100.f + ww * 0.3f, 100.f, ww * 0.7 - 150.f, wh * 0.3f);
-		if (result)label->SetText("Victory");
+	label->SetDimensions(100.f + ww * 0.3f, 100.f, ww * 0.7 - 150.f, wh * 0.3f);
+	if (result)label->SetText("Victory");
 	AddElement(label);
 
-	VerticalPanel* statPanel = new MainMenuPanel(this, ww*0.3f+60.f, 120.f + wh*0.3f, ww*0.7f-60.f, wh*0.3f);		
+	VerticalPanel* statPanel = new MainMenuPanel(this, ww * 0.3f + 60.f, 120.f + wh * 0.3f, ww * 0.7f - 60.f, wh * 0.3f);
 		HorizontalPanel* mapPanel = new HorizontalPanel();
 			Label* mapL = new Label("Stage: ");
 			Label* mapV = new Label(gameScene->GetGame()->GetMap()->GetName());
 			mapPanel->AddElement(mapL);
 			mapPanel->AddElement(mapV);
 		HorizontalPanel* timePanel = new HorizontalPanel();
-			int time = gameScene->GetGame()->GetTime();
-			int hours = time / (60 * 60 * 60);
-			time -= hours * 60 * 60 * 60;
-			int min = time / (60 * 60);
-			time -= min * 60 * 60;
-			int sec = time /60;
-			time -= sec * 60;
+			double seconds = gameScene->GetGame()->GetTime();		
+			int min = seconds / 60;
+			seconds -= min * 60;
+			int miliseconds = floor((seconds - floor(seconds)) * 100.0);
 			Label* timeL = new Label("Time:");
-			std::string timeStr = "";
-			if (hours > 0) timeStr += std::to_string(hours) + "h ";
+			std::string timeStr = "";			
 			if (min > 0) timeStr += std::to_string(min) + "m ";
-			timeStr += std::to_string(sec) + "." + std::to_string(time) + "s ";
+			timeStr += std::to_string((int)seconds) + "." + std::to_string(miliseconds) + "s ";
 			Label* timeV = new Label(timeStr);
 			timePanel->AddElement(timeL);
 			timePanel->AddElement(timeV);
@@ -408,18 +416,14 @@ LevelCompleteScene::LevelCompleteScene(App* app, GameplayScene* scene, Map * nex
 	mapPanel->AddElement(mapL);
 	mapPanel->AddElement(mapV);
 	HorizontalPanel* timePanel = new HorizontalPanel();
-	int time = gameScene->GetGame()->GetTime();
-	int hours = time / (60 * 60 * 60);
-	time -= hours * 60 * 60 * 60;
-	int min = time / (60 * 60);
-	time -= min * 60 * 60;
-	int sec = time / 60;
-	time -= sec * 60;
+	double seconds = gameScene->GetGame()->GetTime();
+	int min = seconds / 60;
+	seconds -= min * 60;
+	int miliseconds = floor((seconds - floor(seconds)) * 100.0);
 	Label* timeL = new Label("Time:");
 	std::string timeStr = "";
-	if (hours > 0) timeStr += std::to_string(hours) + "h ";
 	if (min > 0) timeStr += std::to_string(min) + "m ";
-	timeStr += std::to_string(sec) + "." + std::to_string(time) + "s ";
+	timeStr += std::to_string((int)seconds) + "." + std::to_string(miliseconds) + "s ";
 	Label* timeV = new Label(timeStr);
 	timePanel->AddElement(timeL);
 	timePanel->AddElement(timeV);
@@ -462,7 +466,7 @@ void SaveAndExitButton::Action(){
 
 //-PerfTest------------------------------------------
 
-PerfTestResultScene::PerfTestResultScene(App * app, int max, int min, int avg) : MenuScene(app){
+PerfTestResultScene::PerfTestResultScene(App * app, int max, int min, int avg, bool passed) : MenuScene(app){
 	int ww = GetSceneWidth();
 	int wh = GetSceneHeight();
 	panel = new MainMenuPanel(this, 50.f, 100.f, ww * 0.3f, wh * 0.25f);
@@ -474,6 +478,10 @@ PerfTestResultScene::PerfTestResultScene(App * app, int max, int min, int avg) :
 	AddElement(label);
 
 	VerticalPanel* statPanel = new MainMenuPanel(this, ww * 0.3f + 60.f, 120.f + wh * 0.3f, ww * 0.7f - 60.f, wh * 0.3f);
+		HorizontalPanel* qualityPanel = new HorizontalPanel();
+			qualityPanel->AddElement(new Label("Quality Test: "));
+			qualityPanel->AddElement(new Label((passed)?("Passed"):("Failed")));
+			statPanel->AddElement(qualityPanel);
 		HorizontalPanel* minPanel = new HorizontalPanel();
 			minPanel->AddElement(new Label("Min FPS: "));
 			minPanel->AddElement(new Label(std::to_string(min)));

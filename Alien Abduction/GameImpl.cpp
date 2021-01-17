@@ -2,17 +2,17 @@
 #include "Player.h"
 #include "Scenes.h"
 #include "Camera.h"
+#include "ResourceLoader.h"
 
-GameImpl::GameImpl(GLFWwindow* w, Camera* cam):Game(w, cam){}
+GameImpl::GameImpl(GLFWwindow* w, Camera* cam):Game(w, cam){
+	playerModel = ResourceLoader::player;
+}
 
 void GameImpl::Update(){
 	Game::Update();
-	camera->Follow((Entity*)GetPlayer());
-	if (player->GetHealth() <= 0) {
-		scene->GetApp()->ChangeScene(new GameEndScene(scene->GetApp(), scene, false));
-	}
+	if (player->GetHealth() <= 0) 
+		scene->GetApp()->ChangeScene(new GameEndScene(scene->GetApp(), scene, false));	
 }
-
 void GameImpl::ChangeMap(Map* map){
 	scene->GetApp()->ChangeScene(new LevelCompleteScene(scene->GetApp(), scene, map));
 }

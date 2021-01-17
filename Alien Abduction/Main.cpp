@@ -3,14 +3,15 @@
 #include "ResourceLoader.h"
 #include "Scenes.h"
 
-App* app = new App("Abducted");
+App* app = new App("Alien Abduction");
 
 int main(void) {
 	app->Init();
 	ResourceLoader loader;
-	MainMenu m(app);
-	app->Run((MenuScene*)&m);  
-	std::cout << "AAAA";
+	app->Run(new MainMenu(app));  
 	loader.Unload();
 	return 0;
 }
+
+
+

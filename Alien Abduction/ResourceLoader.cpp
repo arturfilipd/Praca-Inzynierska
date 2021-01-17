@@ -4,6 +4,7 @@ Model* ResourceLoader::projectile;
 Model* ResourceLoader::playerprojectile;
 Model* ResourceLoader::rocket;
 
+Model* ResourceLoader::player;
 Model* ResourceLoader::alien;
 Model* ResourceLoader::sentrybot;
 Model* ResourceLoader::beastman;
@@ -48,12 +49,11 @@ void ResourceLoader::Load(){
 	projectile = LoadModel("res/models/projectile.obj");
 	playerprojectile = LoadModel("res/models/projectiles/playerproj.obj");
 	rocket = LoadModel("res/models/projectiles/rocket.obj");
-
-	alien = LoadModel("res/models/ayyy.obj");
+	alien = LoadModel("res/models/alien.obj");
+	player = LoadModel("res/models/player.obj");
 	sentrybot = LoadModel("res/models/roundbot.obj");
 	beastman = LoadModel("res/models/beastman.obj");
 	alienking = LoadModel("res/models/alienking.obj");
-
 	key = LoadModel("res/models/objects/key.obj");
 	lockedteleport = LoadModel("res/models/objects/locked.obj");
 	teleport = LoadModel("res/models/objects/unlocked.obj");

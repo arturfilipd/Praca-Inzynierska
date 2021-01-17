@@ -36,11 +36,12 @@ public:
 };
 
 class WeaponRocketLauncher : public Weapon {
-	float usedFuel = 0;
+	
 	float fuelRate; // fuel loaded per second
 	float maxFuel;
 	float loading = false;
 public:
+	float usedFuel = 0;
 	WeaponRocketLauncher(Game * g);
 	inline float GetProgress() { return usedFuel / maxFuel; }
 	inline bool isLoading() { return loading; }

@@ -58,13 +58,15 @@ public:
 
 class PerfTester : public Entity {
 	int framesCount;
-	int time = 45;
+	double targetTime = 40;
+	double totalTime = 0;
 	int seconds = 0;
 	int fpsSum = 0;
 	int minFps = 999999;
 	int maxFps = 0;
 	int avgFps;
-	double previousTime = -1;
+	bool qualityTest = false;
+	double prevSecond = 0;
 public:
 	PerfTester();
 	void Update();

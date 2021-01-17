@@ -30,6 +30,7 @@ public:
 	static Texture* rocketIcon;
 	
 	//Models
+	static Model* player;
 	//--projectiles
 	static Model* projectile;
 	static Model* playerprojectile;

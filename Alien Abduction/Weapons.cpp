@@ -27,7 +27,6 @@ void WeaponPistol::Shoot(){
 
 
 //Shotgun
-
 WeaponShotgun::WeaponShotgun(Game* game) : Weapon(game) {
 	name = "Shotgun";
 	group = 2;
@@ -64,15 +63,13 @@ WeaponMachineGun::WeaponMachineGun(Game* game) : Weapon(game) {
 	StatusUI = new WeaponMachineGunStatus(this, ResourceLoader::mgIcon);
 }
 
-bool WeaponMachineGun::canFire()
-{
+bool WeaponMachineGun::canFire(){
 	return (time <= 0 && magazine > 0 && (released || autofire));
 }
 
-void WeaponMachineGun::Update()
-{
+void WeaponMachineGun::Update(){
 	if (reloading) {
-		reloadProgress += 1.f / 60.f;
+		reloadProgress += game->GetScene()->GetApp()->deltaTime();
 		if (reloadProgress >= reloadTime) {
 			if (ammunition >= maxmagazine) {
 				ammunition -= maxmagazine;
@@ -82,8 +79,7 @@ void WeaponMachineGun::Update()
 				magazine = ammunition;
 				ammunition = 0;
 			}
-			reloadProgress = 0;
-			std::cout << "Reloaded\n";
+			reloadProgress = 0;			
 			reloading = false;
 		}
 	}
@@ -97,28 +93,22 @@ void WeaponMachineGun::Update()
 			game->AddEntity(p);
 			time = cooldown;
 			magazine--;
-			if (magazine <= 0) {
-				reloading = true;
-				std::cout << "Reloading\n";
-			}
+			if (magazine <= 0) 
+				reloading = true;		
 		}
 	}
 }
 
-void WeaponMachineGun::Shoot()
-{
+void WeaponMachineGun::Shoot(){
 	if (reloading) return;
 	if (magazine == 0 && ammunition == 0) return;
 	firing = true;
 }
-
-void WeaponMachineGun::Release()
-{
+void WeaponMachineGun::Release(){
 	firing = false;
 }
 
 //RocketLauncher
-
 WeaponRocketLauncher::WeaponRocketLauncher(Game* game) : Weapon(game) {
 	name = "Rocket Launcher";
 	group = 4;
@@ -130,23 +120,21 @@ WeaponRocketLauncher::WeaponRocketLauncher(Game* game) : Weapon(game) {
 	StatusUI = new WeaponRocketLauncherStatus(this, ResourceLoader::rocketIcon);
 }
 
+void WeaponRocketLauncher::Update() {
+
+	if (!loading) Weapon::Update();
+	else {
+		if (usedFuel < maxFuel) {			
+			usedFuel += fuelRate * (float)game->GetScene()->GetApp()->deltaTime();
+			return;
+		}
+		else usedFuel = maxFuel;
+	}
+}
 void WeaponRocketLauncher::Shoot(){
 	if (ammunition > 0 && canFire())	
 		loading = true;				
 }
-
-void WeaponRocketLauncher::Update(){
-	
-	if (!loading) Weapon::Update();
-	else {
-		if (usedFuel < maxFuel) {
-			usedFuel += fuelRate / 60.f;			
-			return;
-		}
-		else usedFuel = maxFuel;		
-	}
-}
-
 void WeaponRocketLauncher::Release(){	
 	if (!loading) return;
 	loading = false;

@@ -173,7 +173,7 @@
     <None Include="res\maps\m2.map" />
     <None Include="res\maps\m3.map" />
     <None Include="res\maps\test.map" />
-    <None Include="res\models\ayyy.mtl" />
+    <None Include="res\models\alien.mtl" />
     <None Include="res\models\projectile.mtl" />
     <None Include="res\models\robobro.fbx" />
     <None Include="res\models\robobro.mtl" />
@@ -182,7 +182,7 @@
     <None Include="res\shaders\UI.shader" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="res\models\ayyy.obj">
+    <Object Include="res\models\alien.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

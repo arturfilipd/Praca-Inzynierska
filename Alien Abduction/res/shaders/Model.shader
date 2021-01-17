@@ -7,26 +7,23 @@ layout(location = 2) in vec2 aTexCoords;
 
 out vec2 TexCoords;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 u_ModelMatrix;
+uniform mat4 u_ViewMatrix;
+uniform mat4 u_ProjectionMatrix;
 
-void main()
-{
+void main(){
     TexCoords = aTexCoords;
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(aPos, 1.0);
 }
 
 #shader fragment
 #version 330 core
 
 out vec4 FragColor;
-
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
 
-void main()
-{
+void main(){
     FragColor = texture(texture_diffuse1, TexCoords);
 }
