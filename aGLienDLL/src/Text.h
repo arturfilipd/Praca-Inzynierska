@@ -1,3 +1,10 @@
+﻿/*
+Kod zaczerpnięty i edytowany na licencji CC BY-NC 4.0
+Źródło: https://learnopengl.com/In-Practice/Text-Rendering
+Autor: Joey de Vries (twitter.com/JoeyDeVriez)
+Licencja: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+*/
+
 #pragma once
 #include "Shader.h"
 #include <map>

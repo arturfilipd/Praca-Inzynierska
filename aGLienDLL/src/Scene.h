@@ -29,6 +29,7 @@ public:
 	virtual void OnLeftMouseButtonClick();
 	virtual void OnRightMouseButtonClick();
 	virtual void Update();
+	virtual void Draw();
 	inline bool deletingPrevScene() { return deletePrevScene; }
 	void SetApp(App* app);
 	void SetPrevScene(Scene* s);
@@ -56,6 +57,7 @@ public:
 	UIElement();
 	UIElement(float x, float y, float w, float h );
 	virtual void Update();
+	virtual void Draw();
 	virtual void SetScene(Scene* s);
 	virtual void SetParent(UIElement * e);
 	virtual void debugPrint();
@@ -88,6 +90,7 @@ public:
 	Panel(float x, float y, float w, float h);
 	void AddElement(UIElement* e);
 	virtual void Update();
+	virtual void Draw();
 	void debugPrint();
 	void SetMargins(float r, float l, float t, float b);
 	void SetMargins(float size);
@@ -123,6 +126,7 @@ protected:
 	TEXTALIGN align = LEFT;
 public:
 	void Update();
+	void Draw();
 	Label(std::string text);
 	void ForceSize(bool);
 	void SetAlign(TEXTALIGN a);
@@ -138,6 +142,7 @@ protected:
 	bool highlighted;
 public:
 	void Update();
+	void Draw();
 	MenuButton(std::string l);
 	virtual void Action();
 	Texture* GetTexture();
@@ -154,6 +159,7 @@ class __declspec(dllexport) Image : public UIElement {
 public:
 	Image(Texture * tex);
 	void Update();
+	void Draw();
 };
 
 class __declspec(dllexport) GameplayScene : public Scene {
@@ -169,6 +175,7 @@ public:
 	void AddUIElement(UIElement* e);
 	virtual void Pause();
 	virtual void Update();
+	virtual void Draw();
 	virtual void OnLeftMouseButtonRelease();
 	virtual void OnRightMouseButtonRelease();
 	virtual void OnLeftMouseButtonClick();
@@ -190,6 +197,7 @@ public:
 	~MenuScene();
 	inline std::list<UIElement*>* GetChildren() { return &children; }
 	virtual void Update();
+	virtual void Draw();
 	virtual void OnLeftMouseButtonRelease();
 	virtual void OnRightMouseButtonRelease();
 	virtual void OnLeftMouseButtonClick();

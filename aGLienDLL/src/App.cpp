@@ -54,7 +54,7 @@ int App::Init() {
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH);
@@ -68,25 +68,23 @@ int App::Init() {
 }
 
 int App::Run (MenuScene * scene){     
-    double previousTime = glfwGetTime();
-    int frameCount = 0;
     currentScene = scene;
-    while (!exit && glfwWindowShouldClose){    
-        double currentTime = glfwGetTime();
-        frameCount++;
-        renderer->Clear(); 
-        currentScene->Update();            
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-        if (currentTime - previousTime >= 1.0){             
-            fps = frameCount;
-            frameCount = 0;
-            previousTime = currentTime;
-        }
+    prevTime = glfwGetTime();
+    while (!exit && glfwWindowShouldClose){  
+        timeDiff = glfwGetTime() - prevTime;
+        if (timeDiff > 1.0 / 180.0) {
+            prevTime = glfwGetTime();
+            currentScene->Update();
+        }   
         if (sceneChange) {        
             currentScene = nextScene;
             sceneChange = false;           
         }
+        renderer->Clear();
+        currentScene->Draw();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+       
     } 
     glfwTerminate();
     return 0;
@@ -105,4 +103,8 @@ void App::Close(){
 
 double App::GetCurrentTime(){
     return glfwGetTime();
+}
+
+int App::GetKeyStatus(int keyCode){
+    return glfwGetKey(window, keyCode);
 }

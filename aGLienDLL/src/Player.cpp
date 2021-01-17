@@ -5,14 +5,23 @@
 Player::Player(float x, float y, const char* modelPath) {
     this->x = x;
     this->y = y;
-    speed = 3;
+    speed =3.f;
     model = new Model(modelPath);
     rotation = glm::vec2(1.f, 0.5f);
     type = PLAYER;
     health = 10;
     armor = 0;
 }
-
+Player::Player(float x, float y) {
+    this->x = x;
+    this->y = y;
+    speed =3.f;
+    model = nullptr;
+    rotation = glm::vec2(1.f, 0.5f);
+    type = PLAYER;
+    health = 10;
+    armor = 0;
+}
 void Player::Update(){ 
 
     Entity::Update();  
@@ -38,8 +47,8 @@ void Player::Update(){
         if (glfwGetKey(game->GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
             xDir = 1;
         if (xDir != 0 && yDir != 00) m = 1.414f;
-        float xD = x + (speed * xDir / m / 60.f);
-        float yD = y + (speed * yDir / m / 60.f);
+        float xD = x + (speed * xDir / m * game->deltaTime());
+        float yD = y + (speed * yDir / m * game->deltaTime());
         if (game->GetMap()->isValid(roundf(xD), roundf(yD))) {
             x = xD;
             y = yD;
@@ -49,7 +58,7 @@ void Player::Update(){
     }
 
     if(currentWeapon)currentWeapon->Update();
-    if (weaponSwapFrames > 0) weaponSwapFrames--;
+    if (weaponSwapTime > 0) weaponSwapTime -= game->deltaTime();
     
 }
 
@@ -58,7 +67,7 @@ void Player::SetCurrentWeapon(Weapon* w){
 }
 
 void Player::SetWeapon(int group){
-    if (weaponSwapFrames != 0) return;
+    if (weaponSwapTime > 0) return;
     Weapon* target = NULL;
     for (Weapon* weapon : weapons) {
         if (weapon->GetGroup() == group) {
@@ -81,7 +90,7 @@ void Player::SetWeapon(int group){
         }
     }
     if (target != NULL) {
-        weaponSwapFrames = 10;
+        weaponSwapTime = 0.3;
         currentWeapon = target;
     }
 }
@@ -124,24 +133,31 @@ void Player::SetHealth(int h){
     health = h;
 }
 
-int Player::AddHealth(int amount){
-    health += amount;
-    if (health > maxHealth) {
-        int r = health - maxHealth + 1;
-        health = maxHealth;
-        return r;
+int Player::AddHealth(int amount){   
+    if (health < maxHealth) {
+        health += amount;
+        if (health > maxHealth) {
+            int added = amount - health + maxHealth;
+            health = maxHealth;
+            return added;
+        }        
+        return amount;
+    }
+    else return 0;
+}
+int Player::AddArmor(int amount) {
+    if (armor < maxArmor) {
+        armor += amount;
+        if (armor > maxArmor) {
+            int added = amount - armor + maxArmor;
+            armor = maxArmor;
+            return added;
+        }
+        return amount;
     }
     else return 0;
 }
 
-int Player::AddArmor(int amount) {
-    armor += amount;
-    if (armor > maxArmor) {        
-        armor = maxArmor;
-        return 1;
-    }
-    else return 0;
-}
 
 void Player::SetArmor(int a){
     armor = a;
@@ -151,6 +167,14 @@ void Player::SetControl(bool c){
     hasControl = c;
 }
 
+
+void Player::SetMaxHealth(int h){
+    maxHealth = h;
+}
+
+void Player::SetMaxArmor(int a){
+    maxArmor = a;
+}
 
 void Player::OnLeftMouseClick(){
     if(currentWeapon && currentWeapon->canFire())

@@ -13,6 +13,7 @@ class __declspec(dllexport) Entity {
 protected:
 	static int n;
 	int ID;
+	std::string name;
 	float x, y;
 	glm::vec2 rotation;
 	Model* model;
@@ -23,9 +24,9 @@ protected:
 	float destx =-1;
 	float desty =-1;
 	std::list<Node> path;
-	const int pathingIncrement = 10;
-	int framesToPathing = 0;
-	bool pathingRequesred;
+	const double pathingIncrement = 0.2;
+	double timeToPathing = 0;
+	bool pathingRequested;
 	void GetPath(Node dest);	
 public:
 	Entity();
@@ -53,6 +54,7 @@ public:
 	void LookAt(Entity* target);
 	inline glm::vec2 GetRotation() { return rotation; }
 	virtual void OnDeath();
+	inline std::string GetName() { return name; }
 	float GetDistance(Entity* e);
 	float GetDistance(Node n);
 	

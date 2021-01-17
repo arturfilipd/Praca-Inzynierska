@@ -21,6 +21,9 @@ private:
 	bool exit = false;
 	int fps;
 	//---------------------------
+	double timeDiff;
+	double prevTime;
+	//---------------------------
 	bool sceneChange = false;
 	Scene* nextScene = nullptr;
 	
@@ -36,4 +39,6 @@ public:
 	inline TextRenderer* GetTextRenderer() { return textRenderer; }
 	double GetCurrentTime();
 	inline int GetFps() { return fps; }
+	int GetKeyStatus(int keyCode);
+	inline double deltaTime() { return timeDiff; }
 };

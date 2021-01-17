@@ -8,18 +8,19 @@ private:
 	//Weapons
 	Weapon* currentWeapon;
 	std::list<Weapon*> weapons;
-	int weaponSwapFrames = 0;
+	double weaponSwapTime = 0;
 	int weaponGroup;
 	int weaponprio;
 	//Stat
 	int health;	
 	int armor;
-	const int maxHealth = 10;
-	const int maxArmor = 20;
+	int maxHealth = 10;
+	int maxArmor = 20;
 
 	bool hasControl = true;
 public:
 	Player(float x, float y, const char* modelPath);
+	Player(float x, float y);
 	void Update();	
 	void SetCurrentWeapon(Weapon * w);
 	void SetWeapon(int group);
@@ -36,6 +37,8 @@ public:
 	void SetControl(bool c);
 	inline std::list<Weapon*> GetWeapons() { return weapons; }
 	inline Weapon* GetCurrentWeapon(){ return currentWeapon; }
+	void SetMaxHealth(int h);
+	void SetMaxArmor(int a);
 	virtual void OnLeftMouseClick();
 	virtual void OnLeftMouseRelease();
 	virtual void OnRightMouseClick();

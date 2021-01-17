@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Texture.h"
 #include <vector>
+#include "Player.h"
 #include "Scene.h"
 #include <glm\gtc\type_ptr.hpp>
 void GLClearError() {
@@ -40,7 +41,7 @@ Renderer::Renderer(){
     TextureShader->SetUniformMatrix4f("u_ViewMatrix", ViewMatrix);
     TextureShader->SetUniformMatrix4f("u_ProjectionMatrix", ProjectionMatrix);
     ModelShader->Bind();
-    ModelShader->SetUniformMatrix4f("projection", ProjectionMatrix);
+    ModelShader->SetUniformMatrix4f("u_ProjectionMatrix", ProjectionMatrix);
     UIShader->Bind();    
     glm::mat4 projection = glm::ortho(0.0f, 960.f, 540.f, 0.0f, -1.0f, 1.0f);
     UIShader->SetUniformMatrix4f("u_ProjectionMatrix", projection);    
@@ -108,7 +109,7 @@ void Renderer::Update(Game * game, Camera& cam)
     
     //Setup
     ModelShader->Bind();
-    ModelShader->SetUniformMatrix4f("view", vm);
+    ModelShader->SetUniformMatrix4f("u_ViewMatrix", vm);
     BasicShader->Bind();    
     BasicShader->SetUniformMatrix4f("u_ViewMatrix", vm);
     TextureShader->Bind();
@@ -119,9 +120,11 @@ void Renderer::Update(Game * game, Camera& cam)
     VertexArray varray;
     varray.Bind();
     Map* map = game->GetMap();
-    
-    for (int x = 0; x < map->GetSize(); x++) {
-        for (int y = 0; y < map->GetSize(); y++) {  
+    int pX = round(game->GetPlayer()->GetX());
+    int pY = round(game->GetPlayer()->GetY());
+    for (int x = pX-6; x < pX+7; x++) {
+        for (int y = pY-4; y < pY+4; y++) {  
+            if (x < 0 || y < 0 || x >= map->GetSize() || y >= map->GetSize()) continue;
             TextureShader->Bind();
             Tile* t = map->GetTile(x, y);
             Texture* tex = map->GetTexture((TILETYPE)t->GetType());           
@@ -155,7 +158,7 @@ void Renderer::Update(Game * game, Camera& cam)
         if (r.x != 0 || r.y != 0)
             model = glm::rotate(model, atan2f(-r.y, r.x) + glm::radians(90.f), glm::vec3(0.f, 1.0f, 0.f));
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-        ModelShader->SetUniformMatrix4f("model", model);
+        ModelShader->SetUniformMatrix4f("u_ModelMatrix", model);
         e->GetModel()->Draw(*ModelShader);
     }
 }

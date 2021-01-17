@@ -1,18 +1,21 @@
 #include "Entity.h"
 #include "Behaviour.h"
 #include <vector>
-Entity::Entity(){  
-    rotation = glm::vec2(0.f, 1.f);
+Entity::Entity(){     
     ID = n++;
 }
 Entity::Entity(float x, float y){
     this->x = x;
     this->y = y;
+    ID = n++;
+    name = "Generic Entity";
 }
 Entity::Entity(float x, float y, Model* m){
     this->x = x;
     this->y = y;
     model = m;
+    ID = n++;
+    name = "Generic Entity";
 }
 int Entity::n = 0;
 Entity::~Entity() {
@@ -22,28 +25,31 @@ Entity::~Entity() {
 }
 
 void Entity::Update(){ 
-    pathingRequesred = false;
-    if (framesToPathing > 0) framesToPathing--;
+    pathingRequested = false;
+    if (timeToPathing > 0) timeToPathing -= game->deltaTime();
     destiPriority = -1;
     for (Behaviour* b : behaviours)
         b->Update();       
-    if (path.size() != 0) {       
-        float m = 1.4142f;
+    if (path.size() != 0) {  
         LookAt(path.front().x, path.front().y);
-        if (path.front().x == x || path.front().y == y) m = 1.f;
-        float distance = speed / 60.f;
-        float xD = abs(path.front().x - x);
-        float yD = abs(path.front().y - y);   
-        float xx = xD / (xD + yD); if (xx < 0.01) xx = 0;
-        float yy = yD / (xD + yD); if (yy < 0.01) yy = 0;        
-        (path.front().x > x) ? (x += distance * xx) : (x -= distance * xx);
-        (path.front().y > y) ? (y += distance * yy) : (y -= distance * yy);   
-        float minDist = (speed/60.f)* (speed / 60.f);
-        if (minDist < 0.04f) minDist = 0.02f;
-        if ((xD * xD) + (yD * yD) < (speed / 60.f) * (speed / 60.f))
-            path.pop_front();
+        float distanceToGo = game->deltaTime() * speed;
+        while (distanceToGo > 0 && !path.empty()) {
+            if (distanceToGo < GetDistance(path.front())) {
+                float dX = (distanceToGo / GetDistance(path.front())) * (path.front().x - x);
+                float dY = (distanceToGo / GetDistance(path.front())) * (path.front().y - y);
+                x += dX;
+                y += dY;
+                distanceToGo = 0;
+            }
+            else {
+                distanceToGo -= GetDistance(path.front());
+                x = path.front().x;
+                y = path.front().y;                
+                path.pop_front();
+            }
+        }        
     }    
-    if (pathingRequesred) framesToPathing = pathingIncrement;
+    if (pathingRequested)timeToPathing = pathingIncrement;
 }
 
 Model* Entity::GetModel(){
@@ -65,15 +71,14 @@ void Entity::SetGame(Game* g){
 }
 
 void Entity::SetDestination(Node dest, int prio) {
+    if (timeToPathing > 0) return;
     if (prio >= destiPriority) {        
-        if (!(dest.x == destx && dest.y == desty)) {
-            if (framesToPathing == 0) {
+        if (!(round(dest.x) == round(destx) && round(dest.y) == round(desty))) {            
                 destx = dest.x;
                 desty = dest.y;
                 path.clear();
                 destiPriority = prio;
-                GetPath(dest);
-            }            
+                GetPath(dest);                      
         }        
     }
 }
@@ -89,7 +94,7 @@ void Entity::MarkForDeletion(){
 }
 
 void Entity::GetPath(Node dest){    
-    pathingRequesred = true;
+    pathingRequested = true;
     float ns = game->GetMap()->GetNodeSize();
     path.clear();
     Node pn;

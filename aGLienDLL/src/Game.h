@@ -14,6 +14,7 @@ class Entity;
 class Camera;
 class Player;
 class Weapon;
+class Model;
 static bool deleteAll(Entity* theElement) { delete theElement; return true; }
 
 class __declspec(dllexport) Game {
@@ -27,7 +28,7 @@ protected:
 	std::map<std::string, int> variables;
 	
 	//Stats
-	long time = 0;
+	double time = 0;
 	int enemiesKilled = 0;
 
 public:
@@ -41,6 +42,7 @@ public:
 	std::list<Entity*>* GetEntities();
 	Player* GetPlayer();
 	Map* GetMap();
+	Model* playerModel;
 	void RemoveEntity(Entity*);
 	void AddEntity(Entity*);
 	double* GetWorldMousePosition();
@@ -53,9 +55,12 @@ public:
 	void SetScene(GameplayScene* s);
 	void Restart();
 	void AddKill();
+	Entity* GetEntityById(int id);
+	Entity* GetEntityByName(std::string name);
 	inline GameplayScene* GetScene() { return scene; }
-	inline long GetTime() {	return time;}
+	inline double GetTime() {	return time;}
 	inline int GetKillCount() { return enemiesKilled; }
+	inline double deltaTime() { return scene->GetApp()->deltaTime(); }
 	void SetControl(bool control);
 };
 

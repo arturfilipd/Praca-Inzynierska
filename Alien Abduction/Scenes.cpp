@@ -202,12 +202,14 @@ WeaponRocketLauncherStatus::WeaponRocketLauncherStatus(WeaponRocketLauncher* r, 
 	name = "Rocket Launcher Status Window";
 	this->r = r;
 	icon = new Image(tex);
+	HorizontalPanel * rightPanel = new HorizontalPanel();
 	fuelL = new Label(std::to_string(r->GetAmmunition()));
 	fuelL->ForceSize(false);
 	progressL = new Label("");
 	AddElement(icon);
-	AddElement(fuelL);
-	AddElement(progressL);
+	rightPanel->AddElement(fuelL);
+	rightPanel->AddElement(progressL);
+	AddElement(rightPanel);
 }
 
 void WeaponRocketLauncherStatus::Update(){		

@@ -52,7 +52,7 @@ BehaviourChaseOnLeash::BehaviourChaseOnLeash(float leash, float boost){
 
 void BehaviourChaseOnLeash::Update(){
 	bool prev = active;
-	if (game->GetMap()->GetDistance(parent->GetNode(), game->GetPlayer()->GetNode()) <= leash) {
+	if (parent->GetDistance(game->GetPlayer()) <= leash) {
 		active = true;		
 		parent->SetDestination(game->GetPlayer()->GetPosition(), priority);
 		if (!prev) parent->speed += speedBoost;
@@ -70,16 +70,16 @@ BehaviourProjectile::BehaviourProjectile(glm::vec2 direction, float speed, float
 }
 
 void BehaviourProjectile::Update(){
-	distance += speed / 60.f;
+	distance += speed * game->deltaTime();
 	if (distance >= range && range > 0) {
 		parent->MarkForDeletion();
 	}
-	float x = parent->GetX() + speed * direction[0] / 60.f;
-	float y = parent->GetY() + speed * direction[1] / 60.f;
+	float x = parent->GetX() + speed * direction[0] * game->deltaTime();
+	float y = parent->GetY() + speed * direction[1] * game->deltaTime();
 	parent->SetPosition(x, y);
 }
 
-BehaviourShootAtPlayer::BehaviourShootAtPlayer(float speed, float range, float cooldown, float activation,int damage, Model* m){
+BehaviourShootAtPlayer::BehaviourShootAtPlayer(float speed, float range, float cooldown, float activation,int damage, Model* m){	
 	this->projectilespeed = speed;
 	this->projectileRange = range;
 	this->cooldown = cooldown;
@@ -93,6 +93,7 @@ void BehaviourShootAtPlayer::Update(){
 		if (parent->GetDistance(game->GetPlayer()) <= activationRange) {
 			currentCooldown = cooldown;
 			glm::vec2 dir = { game->GetPlayer()->GetX() - parent->GetX(),  game->GetPlayer()->GetY() - parent->GetY() };
+			parent->LookAt(game->GetPlayer()->GetX(), game->GetPlayer()->GetY());
 			dir = glm::normalize(dir);
 			Projectile* p = new Projectile(parent, projectile, dir);
 			p->SetGame(game);
@@ -102,7 +103,7 @@ void BehaviourShootAtPlayer::Update(){
 		}
 	}
 	else {
-		currentCooldown -= 1.f / 60.f;
+		currentCooldown -= game->deltaTime();
 	}
 }
 
@@ -269,15 +270,23 @@ BehaviourAddHealthOnPickup::BehaviourAddHealthOnPickup(int amount){
 
 void BehaviourAddHealthOnPickup::Update(){
 	if (parent->GetDistance(game->GetPlayer()) < 0.2f) {
-		if (game->GetPlayer()->AddHealth(amount)) parent->MarkForDeletion();
+		int r = game->GetPlayer()->AddHealth(amount);
+		if (r != 0) {
+			parent->MarkForDeletion();
+			game->SetVariable("added_health", r + game->GetVariable("added_health"));
+		} 
 	}
 }
 
 BehaviourAddArmorOnPickup::BehaviourAddArmorOnPickup(int amount){
 	this->amount = amount;
 }
-void BehaviourAddArmorOnPickup::Update(){
+void BehaviourAddArmorOnPickup::Update() {
 	if (parent->GetDistance(game->GetPlayer()) < 0.2f) {
-		if (game->GetPlayer()->AddArmor(amount)) parent->MarkForDeletion();
+		int r = game->GetPlayer()->AddArmor(amount);
+		if (r != 0) {
+			parent->MarkForDeletion();
+			game->SetVariable("added_armor", r + game->GetVariable("added_armor"));
+		}
 	}
 }

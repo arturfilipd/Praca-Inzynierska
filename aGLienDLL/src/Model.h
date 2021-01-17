@@ -1,3 +1,10 @@
+﻿/*
+Kod zaczerpnięty i edytowany na licencji CC BY-NC 4.0
+Źródło: https://learnopengl.com/Model-Loading/Model
+Autor: Joey de Vries (twitter.com/JoeyDeVriez)
+Licencja: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+*/
+
 #ifndef MODEL_H
 #define MODEL_H
 

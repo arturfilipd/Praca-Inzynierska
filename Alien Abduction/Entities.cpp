@@ -8,6 +8,7 @@
 EnemySentryBot::EnemySentryBot(float x, float y, std::list<Node> patrol) : Enemy(x, y, ResourceLoader::sentrybot) {
 	speed = 0.8f;
 	health = 3.f;
+	name = "Sentry Bot";
 	AddBehaviour(new BehaviourPatrol(patrol));
 	AddBehaviour(new BehaviourChaseOnLeash(3.f, 3.5f));
 	AddBehaviour(new BehaviourExplodeOnPlayerContact(0.3f, 5));	
@@ -15,6 +16,7 @@ EnemySentryBot::EnemySentryBot(float x, float y, std::list<Node> patrol) : Enemy
 
 EnemyAlien::EnemyAlien(float x, float y) : Enemy(x, y, ResourceLoader::alien){
 	health = 2.f;
+	name = "Alien";
 	AddBehaviour(new BehaviourShootAtPlayer(7.f, 8.f, 0.5f, 3.5f, 1, ResourceLoader::projectile));
 	AddBehaviour(new BehaviourLimitedChaseOnLeash(3.f, 1.5f));
 }
@@ -22,6 +24,7 @@ EnemyAlien::EnemyAlien(float x, float y) : Enemy(x, y, ResourceLoader::alien){
 EnemyBeastman::EnemyBeastman(float x, float y) : Enemy (x, y, ResourceLoader::beastman) {
 	health = 20.f;
 	speed = 1.f;
+	name = "Beastman";
 	AddBehaviour(new BehaviourChaseOnLeash(1.f, 3.f));
 	AddBehaviour(new BehaviourChaseOnLeash(8.f, 0.f));
 	AddBehaviour(new BehaviourShootAtPlayer(7.f, 2.f, 0.2f, 1.5f, 2, ResourceLoader::projectile));
@@ -30,6 +33,7 @@ EnemyBeastman::EnemyBeastman(float x, float y) : Enemy (x, y, ResourceLoader::be
 EnemyAlienKing::EnemyAlienKing(float x, float y) :Enemy(x, y, ResourceLoader::alienking){
 	speed = 3;
 	health = 30.f;
+	name = "Alien King";
 	AddBehaviour(new BehaviourLimitedChaseOnLeash(3.f, 2.f));
 	AddBehaviour(new BehaviourShootAtPlayer(12.f, 5.f, 0.1f, 3.f, 1, ResourceLoader::projectile));
 	AddBehaviour(new BehaviourShootAtPlayer(1.f, 3.f, 0.05f, 3.f, 1, ResourceLoader::playerprojectile));

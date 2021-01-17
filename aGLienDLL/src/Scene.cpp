@@ -53,11 +53,22 @@ void MenuScene::Update(){
 	Scene::Update();
 }
 
+void MenuScene::Draw(){
+	if (background != nullptr) background->Draw();
+	for (UIElement* element : children) {
+		element->Draw();
+	}
+}
+
 
 void MenuButton::Update(){
-	highlighted = isHovered();
-	scene->GetApp()->GetRenderer()->Update(this);
+	highlighted = isHovered();	
 	label->Update();
+}
+
+void MenuButton::Draw(){
+	scene->GetApp()->GetRenderer()->Update(this);
+	label->Draw();
 }
 
 MenuButton::MenuButton(std::string l){
@@ -169,6 +180,8 @@ void Scene::Update(){
 	}
 }
 
+void Scene::Draw(){}
+
 void UIElement::debugPrint(){
 	for (int i = 0; i < depth; i++) std::cout << "\t";
 	std::cout << name 
@@ -228,13 +241,20 @@ void GameplayScene::Pause(){
 	app->ChangeScene(pause);
 }
 
-void GameplayScene::Update(){
-	app->GetRenderer()->Update(game, *cam);	
+void GameplayScene::Update(){	
 	for (UIElement* e : ui) {
 		e->Update();
 	}
 	game->Update();
 	Scene::Update();
+}
+
+void GameplayScene::Draw(){
+	app->GetRenderer()->Update(game, *cam);
+	for (UIElement* e : ui) {
+		e->Draw();
+	}
+	Scene::Draw();
 }
 
 void GameplayScene::OnLeftMouseButtonClick(){
@@ -270,7 +290,9 @@ UIElement::UIElement(float x, float y, float w, float h){
 	width = w;
 }
 
-void UIElement::Update(){
+void UIElement::Update(){}
+
+void UIElement::Draw(){
 	scene->GetApp()->GetRenderer()->Update(this);
 }
 
@@ -284,12 +306,14 @@ void UIElement::SetParent(UIElement* e){
 	depth = e->GetDepth() + 1;
 }
 
-void Label::Update(){
+void Label::Update(){}
+
+void Label::Draw(){
 	//Render label		
 	float ly = y + 0.66f * height;
 	float lx = x + 20;
-	float mh = height - 40;	
-	fontSize = mh;	
+	float mh = height - 40;
+	fontSize = mh;
 	if (fontSize < 10) fontSize = 10;
 	float maxsize = width / text.length();
 	if (maxsize < 10) maxsize = 10;
@@ -297,7 +321,7 @@ void Label::Update(){
 	if (align == CENTRE) {
 		float shift = (width / 2) - (text.length() * fontSize / 4);
 		lx = x + shift;
-	}	
+	}
 	scene->GetApp()->GetTextRenderer()->RenderText(text, lx, ly, fontSize, glm::vec3(1.0f, 1.0f, 1.0f), depth);
 }
 
@@ -370,10 +394,16 @@ void Panel::AddElement(UIElement* e){
 	}	
 }
 
-void Panel::Update(){	
-	scene->GetApp()->GetRenderer()->Update(this);
+void Panel::Update(){		
 	for (UIElement* e : children) {
 		e->Update();
+	}
+}
+
+void Panel::Draw(){
+	scene->GetApp()->GetRenderer()->Update(this);
+	for (UIElement* e : children) {
+		e->Draw();
 	}
 }
 
@@ -412,6 +442,8 @@ Image::Image(Texture* tex){
 	name = "Image";
 }
 
-void Image::Update(){
+void Image::Update(){}
+
+void Image::Draw(){
 	scene->GetApp()->GetRenderer()->Update(this);
 }

@@ -21,7 +21,7 @@ Game::Game(GLFWwindow* window, Camera* cam){
 void Game::LoadMap(const char* path){
 	map = new Map(path);
 	if (player == NULL) {		
-		player = new Player(map->GetStartX(), map->GetStartY(), "res/models/Dude/dude2.obj");
+		player = new Player(map->GetStartX(), map->GetStartY());
 		player->SetGame(this);		
 		entities.push_back(player);
 	}
@@ -41,7 +41,7 @@ void Game::LoadMap(Map* map){
 	if (!map) return;
 	this->map = map;
 	if (player == NULL) {
-		player = new Player(map->GetStartX(), map->GetStartY(), "res/models/Dude/dude2.obj");
+		player = new Player(map->GetStartX(), map->GetStartY());
 		player->SetGame(this);		
 		entities.push_back(player);
 	}
@@ -50,6 +50,7 @@ void Game::LoadMap(Map* map){
 	}
 	map->Init(this);
 	player->SetWeapon(1);
+	player->SetModel(playerModel);
 	GameSave save(this);
 	save.Save();
 }
@@ -124,12 +125,27 @@ void Game::AddKill(){
 	enemiesKilled++;
 }
 
+Entity* Game::GetEntityById(int id){
+	for (Entity* e : entities) {
+		if (e->GetID() == id) return e;
+	}
+	return nullptr;
+}
+
+Entity* Game::GetEntityByName(std::string name){
+	for (Entity* e : entities) {
+		if (e->GetName() == name) return e;
+	}
+	return nullptr;
+}
+
 void Game::SetControl(bool c){
 	player->SetControl(c);
 }
 
 void Game::Update(){
-	time++;
+	camera->Follow(player);
+	time += deltaTime();
 	auto e = std::begin(entities);
 	while (e != std::end(entities)) {
 		(*e)->Update();
